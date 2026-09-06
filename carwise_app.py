@@ -35,7 +35,7 @@ user_request = st.text_area(
 # -----------------------------
 # n8n Webhook URL
 # -----------------------------
-N8N_WEBHOOK_URL = "PUT_YOUR_N8N_WEBHOOK_URL_HERE"
+N8N_WEBHOOK_URL = "https://essa2030.app.n8n.cloud/webhook/3ba5a8f7-d092-4aad-a307-d3f694a9d6f3"
 
 # -----------------------------
 # Find Car Button
