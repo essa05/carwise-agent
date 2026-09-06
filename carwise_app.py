@@ -3,7 +3,7 @@ import requests
 
 # -----------------------------
 # Page Settings
-# -----------------------------
+# ------------------------------
 st.set_page_config(
     page_title="CarWise",
     page_icon="🚗",
