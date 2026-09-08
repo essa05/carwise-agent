@@ -22,6 +22,7 @@ def safe(value, default="—"):
 
 def format_price(value):
     value = str(value or "")
+
     value = (
         value.replace("SAR", "")
         .replace("sar", "")
@@ -37,15 +38,46 @@ def format_price(value):
 
 
 def get_score(value):
-    match = re.search(r"\d+(?:\.\d+)?", str(value or ""))
+    match = re.search(
+        r"\d+(?:\.\d+)?",
+        str(value or "")
+    )
 
     if not match:
         return 0
 
     try:
-        return max(0, min(100, int(float(match.group()))))
+        score = int(float(match.group()))
+        return max(0, min(100, score))
     except Exception:
         return 0
+
+
+# =========================
+# Detect "Show All" Request
+# =========================
+def wants_all_cars(user_request):
+
+    text = str(user_request or "").strip()
+
+    phrases = [
+        "جميع السيارات",
+        "كل السيارات",
+        "اعرض السيارات",
+        "اعرض جميع السيارات",
+        "اعرض كل السيارات",
+        "السيارات الموجودة",
+        "السيارات المتوفرة",
+        "وش السيارات الموجودة",
+        "قاعدة البيانات",
+        "كل السيارات في قاعدة البيانات",
+        "جميع السيارات في قاعدة البيانات"
+    ]
+
+    return any(
+        phrase in text
+        for phrase in phrases
+    )
 
 
 # =========================
@@ -97,9 +129,9 @@ def parse_car_blocks(answer):
 
 
 # =========================
-# Render Card
+# Render Car Card
 # =========================
-def render_car_card(car, rank):
+def render_car_card(car, rank, show_best_badge=True):
 
     brand = safe(car.get("Brand"))
     model = safe(car.get("Model"))
@@ -115,23 +147,42 @@ def render_car_card(car, rank):
 
     badge = ""
 
-    if rank == 1:
-        badge = '<span class="best-badge">⭐ أفضل تطابق</span>'
+    if show_best_badge and rank == 1:
+        badge = (
+            '<span class="best-badge">'
+            '⭐ أفضل تطابق'
+            '</span>'
+        )
 
     card_html = f"""
 <div class="car-card" dir="rtl">
 
 <div class="card-header">
+
 <div>
-<div class="car-name">🚘 {brand} {model}</div>
-<div class="car-meta">{body_type} • موديل {year}</div>
+<div class="car-name">
+🚘 {brand} {model}
 </div>
+
+<div class="car-meta">
+{body_type} • موديل {year}
+</div>
+</div>
+
 {badge}
+
 </div>
 
 <div class="price-row">
-<span class="price">{price}</span>
-<span class="currency">ر.س</span>
+
+<span class="price">
+{price}
+</span>
+
+<span class="currency">
+ر.س
+</span>
+
 </div>
 
 <div class="spec-grid">
@@ -163,17 +214,36 @@ def render_car_card(car, rank):
 </div>
 
 <div class="reason-box">
-<div class="reason-title">✨ لماذا اخترناها لك؟</div>
-<div class="reason-text">{reason}</div>
+
+<div class="reason-title">
+✨ لماذا اخترناها لك؟
+</div>
+
+<div class="reason-text">
+{reason}
+</div>
+
 </div>
 
 <div class="match-header">
-<span>🎯 نسبة التطابق مع طلبك</span>
-<strong>{score}%</strong>
+
+<span>
+🎯 نسبة التطابق مع طلبك
+</span>
+
+<strong>
+{score}%
+</strong>
+
 </div>
 
 <div class="progress">
-<div class="progress-fill" style="width:{score}%"></div>
+
+<div
+class="progress-fill"
+style="width:{score}%">
+</div>
+
 </div>
 
 </div>
@@ -259,7 +329,9 @@ st.markdown("""
         ),
         rgba(255,255,255,.035);
 
-    box-shadow: 0 15px 40px rgba(0,0,0,.22);
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.22);
 }
 
 .card-header {
@@ -308,7 +380,8 @@ st.markdown("""
 
 .spec-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns:
+        repeat(4, 1fr);
     gap: 12px;
 }
 
@@ -375,11 +448,13 @@ st.markdown("""
 .progress-fill {
     height: 100%;
     border-radius: 999px;
-    background: linear-gradient(
-        90deg,
-        #2ecc71,
-        #3498db
-    );
+
+    background:
+        linear-gradient(
+            90deg,
+            #2ecc71,
+            #3498db
+        );
 }
 
 @media (max-width: 700px) {
@@ -389,7 +464,8 @@ st.markdown("""
     }
 
     .spec-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns:
+            repeat(2, 1fr);
     }
 
     .card-header {
@@ -409,7 +485,9 @@ st.markdown("""
 # Header
 # =========================
 st.markdown(
-    '<div class="carwise-title">🚗 CarWise</div>',
+    '<div class="carwise-title">'
+    '🚗 CarWise'
+    '</div>',
     unsafe_allow_html=True
 )
 
@@ -422,9 +500,16 @@ st.markdown(
 
 st.markdown("""
 <div class="info-box">
-<b>🚘 صف لنا السيارة التي تبحث عنها</b><br>
+
+<b>
+🚘 صف لنا السيارة التي تبحث عنها
+</b>
+
+<br>
+
 اكتب ميزانيتك واستخدامك واحتياجاتك،
 وسيبحث CarWise عن أفضل السيارات المناسبة لك.
+
 </div>
 """, unsafe_allow_html=True)
 
@@ -434,10 +519,12 @@ st.markdown("""
 # =========================
 user_request = st.text_area(
     "ما السيارة التي تبحث عنها؟",
+
     placeholder=(
         "مثال: أبغى سيارة عائلية اقتصادية، "
         "ميزانيتي 130 ألف ريال ومناسبة للسفر"
     ),
+
     height=130
 )
 
@@ -461,7 +548,9 @@ if st.button(
 
     if not user_request.strip():
 
-        st.warning("اكتب متطلبات السيارة أولاً.")
+        st.warning(
+            "اكتب متطلبات السيارة أولاً."
+        )
 
     else:
 
@@ -505,6 +594,9 @@ if st.button(
                         answer = response.text
 
 
+                    # =========================
+                    # No Matches
+                    # =========================
                     if "NO_MATCH" in answer.upper():
 
                         st.warning(
@@ -518,9 +610,24 @@ if st.button(
 
                         if cars:
 
-                            st.success(
-                                f"✅ تم العثور على {len(cars[:3])} خيارات مناسبة"
+                            show_all = wants_all_cars(
+                                user_request
                             )
+
+                            if show_all:
+
+                                cars_to_show = cars
+
+                            else:
+
+                                cars_to_show = cars[:3]
+
+
+                            st.success(
+                                f"✅ تم العثور على "
+                                f"{len(cars_to_show)} سيارة"
+                            )
+
 
                             st.markdown(
                                 '<div class="results-title">'
@@ -529,13 +636,16 @@ if st.button(
                                 unsafe_allow_html=True
                             )
 
+
                             for index, car in enumerate(
-                                cars[:3],
+                                cars_to_show,
                                 start=1
                             ):
+
                                 render_car_card(
                                     car,
-                                    index
+                                    index,
+                                    show_best_badge=not show_all
                                 )
 
                         else:
@@ -546,6 +656,7 @@ if st.button(
 
                             st.code(answer)
 
+
                 else:
 
                     st.error(
@@ -553,11 +664,13 @@ if st.button(
                         f"({response.status_code})"
                     )
 
+
             except requests.exceptions.Timeout:
 
                 st.error(
                     "استغرق البحث وقتًا أطول من المتوقع."
                 )
+
 
             except Exception as e:
 
@@ -565,7 +678,9 @@ if st.button(
                     "تعذر الاتصال بخدمة CarWise."
                 )
 
-                st.caption(str(e))
+                st.caption(
+                    str(e)
+                )
 
 
 # =========================
