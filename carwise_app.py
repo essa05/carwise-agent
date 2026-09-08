@@ -1,63 +1,257 @@
 import re
 import html
-import streamlit as st
 import requests
+import streamlit as st
 
-# =========================
-# Page Configuration
-# =========================
+
+# =========================================================
+# إعدادات الصفحة
+# =========================================================
+
 st.set_page_config(
-    page_title="CarWise | خبير السيارات",
+    page_title="CarWise",
     page_icon="🚗",
     layout="centered"
 )
 
-# =========================
-# Helpers
-# =========================
-def safe(value, default="—"):
-    value = str(value or "").strip()
-    return html.escape(value) if value else default
+
+# =========================================================
+# رابط Webhook
+# =========================================================
+
+N8N_WEBHOOK_URL = "https://essa2030.app.n8n.cloud/webhook/3ba5a8f7-d092-4aad-a307-d3f694a9d6f3"
+
+
+# =========================================================
+# CSS
+# =========================================================
+
+st.markdown(
+    """
+<style>
+
+.stApp {
+    direction: rtl;
+}
+
+.block-container {
+    max-width: 1100px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.hero-box {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 22px;
+    padding: 28px;
+    margin-bottom: 28px;
+    background: rgba(255,255,255,0.025);
+}
+
+.hero-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.hero-text {
+    font-size: 16px;
+    opacity: 0.85;
+    line-height: 1.8;
+}
+
+.results-title {
+    font-size: 25px;
+    font-weight: 800;
+    margin-top: 24px;
+    margin-bottom: 20px;
+}
+
+.result-count {
+    padding: 12px 16px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    background: rgba(35, 170, 90, 0.13);
+    border: 1px solid rgba(35, 170, 90, 0.30);
+    font-weight: 700;
+}
+
+.car-card {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.035);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.car-name {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.best-badge {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    background: rgba(35, 170, 90, 0.15);
+    border: 1px solid rgba(35, 170, 90, 0.35);
+}
+
+.price {
+    font-size: 23px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.spec-item {
+    border-radius: 12px;
+    padding: 11px 13px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.spec-label {
+    font-size: 12px;
+    opacity: 0.60;
+    margin-bottom: 4px;
+}
+
+.spec-value {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.reason-box {
+    border-radius: 13px;
+    padding: 14px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.035);
+    line-height: 1.8;
+}
+
+.match-row {
+    margin-top: 16px;
+}
+
+.match-title {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+    font-size: 13px;
+}
+
+.progress-bg {
+    width: 100%;
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.10);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+.text-response {
+    padding: 20px;
+    border-radius: 16px;
+    line-height: 1.9;
+    font-size: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+}
+
+.no-match {
+    padding: 20px;
+    border-radius: 16px;
+    line-height: 1.8;
+    background: rgba(255, 180, 0, 0.08);
+    border: 1px solid rgba(255, 180, 0, 0.25);
+}
+
+.error-box {
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(255, 70, 70, 0.10);
+    border: 1px solid rgba(255, 70, 70, 0.25);
+}
+
+@media (max-width: 700px) {
+    .spec-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+</style>
+""",
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
+# دوال مساعدة
+# =========================================================
+
+def safe(value):
+    if value is None:
+        return "-"
+    return html.escape(str(value).strip())
 
 
 def format_price(value):
-    value = str(value or "")
+    if not value:
+        return "-"
 
-    value = (
-        value.replace("SAR", "")
-        .replace("sar", "")
-        .replace("ريال", "")
-        .replace(",", "")
-        .strip()
-    )
+    text = str(value).replace(",", "").strip()
 
-    try:
-        return f"{int(float(value)):,}"
-    except Exception:
-        return safe(value)
+    match = re.search(r"\d+", text)
+
+    if match:
+        try:
+            number = int(match.group())
+            return f"{number:,} ريال"
+        except:
+            pass
+
+    return safe(value)
 
 
 def get_score(value):
-    match = re.search(
-        r"\d+(?:\.\d+)?",
-        str(value or "")
-    )
-
-    if not match:
-        return 0
-
     try:
-        score = int(float(match.group()))
-        return max(0, min(100, score))
-    except Exception:
-        return 0
+        score = int(
+            re.search(r"\d+", str(value)).group()
+        )
+    except:
+        score = 0
+
+    return max(0, min(score, 100))
 
 
-# =========================
-# Detect "Show All" Request
-# =========================
 def wants_all_cars(user_request):
-
     text = str(user_request or "").strip()
 
     phrases = [
@@ -74,17 +268,14 @@ def wants_all_cars(user_request):
         "جميع السيارات في قاعدة البيانات"
     ]
 
-    return any(
-        phrase in text
-        for phrase in phrases
-    )
+    return any(phrase in text for phrase in phrases)
 
 
-# =========================
-# Parse Agent Output
-# =========================
+# =========================================================
+# تحليل رد الوكيل
+# =========================================================
+
 def parse_car_blocks(answer):
-
     blocks = re.findall(
         r"CAR_START(.*?)CAR_END",
         answer,
@@ -108,11 +299,9 @@ def parse_car_blocks(answer):
     }
 
     for block in blocks:
-
         car = {}
 
         for field, pattern in patterns.items():
-
             match = re.search(
                 pattern,
                 block,
@@ -128,121 +317,113 @@ def parse_car_blocks(answer):
     return cars
 
 
-# =========================
-# Render Car Card
-# =========================
-def render_car_card(car, rank, show_best_badge=True):
+# =========================================================
+# إزالة السيارات المكررة
+# =========================================================
 
+def remove_duplicate_cars(cars):
+    unique = []
+    seen = set()
+
+    for car in cars:
+        key = (
+            str(car.get("Brand", "")).strip().lower(),
+            str(car.get("Model", "")).strip().lower(),
+            str(car.get("Year", "")).strip()
+        )
+
+        if key not in seen:
+            seen.add(key)
+            unique.append(car)
+
+    return unique
+
+
+# =========================================================
+# بطاقة السيارة
+# =========================================================
+
+def render_car_card(car, index, show_best_badge=True):
     brand = safe(car.get("Brand"))
     model = safe(car.get("Model"))
     year = safe(car.get("Year"))
     price = format_price(car.get("Price"))
+
     body_type = safe(car.get("BodyType"))
     best_use = safe(car.get("BestUse"))
     fuel = safe(car.get("FuelEconomy"))
     transmission = safe(car.get("Transmission"))
     seats = safe(car.get("Seats"))
     reason = safe(car.get("Reason"))
+
     score = get_score(car.get("MatchScore"))
 
     badge = ""
 
-    if show_best_badge and rank == 1:
-        badge = (
-            '<span class="best-badge">'
-            '⭐ أفضل تطابق'
-            '</span>'
-        )
+    if index == 1 and show_best_badge:
+        badge = '<span class="best-badge">⭐ أفضل تطابق</span>'
 
     card_html = f"""
-<div class="car-card" dir="rtl">
+<div class="car-card">
 
 <div class="card-header">
-
-<div>
-<div class="car-name">
-🚘 {brand} {model}
+    <div class="car-name">🚘 {brand} {model}</div>
+    {badge}
 </div>
 
-<div class="car-meta">
-{body_type} • موديل {year}
-</div>
-</div>
-
-{badge}
-
-</div>
-
-<div class="price-row">
-
-<span class="price">
-{price}
-</span>
-
-<span class="currency">
-ر.س
-</span>
-
+<div class="price">
+    💰 {price}
 </div>
 
 <div class="spec-grid">
 
-<div class="spec-box">
-<div class="spec-icon">⛽</div>
-<div class="spec-title">اقتصاد الوقود</div>
-<div class="spec-value">{fuel} كم/لتر</div>
-</div>
+    <div class="spec-item">
+        <div class="spec-label">السنة</div>
+        <div class="spec-value">{year}</div>
+    </div>
 
-<div class="spec-box">
-<div class="spec-icon">🪑</div>
-<div class="spec-title">المقاعد</div>
-<div class="spec-value">{seats}</div>
-</div>
+    <div class="spec-item">
+        <div class="spec-label">نوع السيارة</div>
+        <div class="spec-value">{body_type}</div>
+    </div>
 
-<div class="spec-box">
-<div class="spec-icon">⚙️</div>
-<div class="spec-title">ناقل الحركة</div>
-<div class="spec-value">{transmission}</div>
-</div>
+    <div class="spec-item">
+        <div class="spec-label">الاستخدام المناسب</div>
+        <div class="spec-value">{best_use}</div>
+    </div>
 
-<div class="spec-box">
-<div class="spec-icon">👨‍👩‍👧</div>
-<div class="spec-title">الاستخدام</div>
-<div class="spec-value">{best_use}</div>
-</div>
+    <div class="spec-item">
+        <div class="spec-label">اقتصاد الوقود</div>
+        <div class="spec-value">{fuel}</div>
+    </div>
+
+    <div class="spec-item">
+        <div class="spec-label">ناقل الحركة</div>
+        <div class="spec-value">{transmission}</div>
+    </div>
+
+    <div class="spec-item">
+        <div class="spec-label">المقاعد</div>
+        <div class="spec-value">{seats}</div>
+    </div>
 
 </div>
 
 <div class="reason-box">
-
-<div class="reason-title">
-✨ لماذا اخترناها لك؟
+    <strong>لماذا تناسبك؟</strong><br>
+    {reason}
 </div>
 
-<div class="reason-text">
-{reason}
-</div>
+<div class="match-row">
 
-</div>
+    <div class="match-title">
+        <span>نسبة التطابق</span>
+        <span>{score}%</span>
+    </div>
 
-<div class="match-header">
-
-<span>
-🎯 نسبة التطابق مع طلبك
-</span>
-
-<strong>
-{score}%
-</strong>
-
-</div>
-
-<div class="progress">
-
-<div
-class="progress-fill"
-style="width:{score}%">
-</div>
+    <div class="progress-bg">
+        <div class="progress-fill" style="width:{score}%"></div>
+    </div>
 
 </div>
 
@@ -255,307 +436,100 @@ style="width:{score}%">
     )
 
 
-# =========================
-# Custom Design
-# =========================
-st.markdown("""
-<style>
+# =========================================================
+# استخراج الرد من n8n
+# =========================================================
 
-.block-container {
-    max-width: 950px;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
+def extract_agent_answer(response):
+    try:
+        data = response.json()
+    except:
+        return response.text.strip()
 
-.carwise-title {
-    text-align: center;
-    font-size: 52px;
-    font-weight: 900;
-    margin-bottom: 5px;
-}
+    if isinstance(data, str):
+        return data.strip()
 
-.carwise-subtitle {
-    text-align: center;
-    font-size: 19px;
-    color: #9CA3AF;
-    margin-bottom: 30px;
-}
+    if isinstance(data, list):
+        if len(data) > 0:
+            first = data[0]
 
-.info-box {
-    direction: rtl;
-    text-align: right;
-    padding: 20px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.03);
-    margin-bottom: 25px;
-    line-height: 1.8;
-}
+            if isinstance(first, dict):
+                for key in [
+                    "output",
+                    "answer",
+                    "text",
+                    "response"
+                ]:
+                    if key in first:
+                        return str(first[key]).strip()
 
-.stTextArea textarea {
-    direction: rtl;
-    text-align: right;
-    border-radius: 16px !important;
-    font-size: 17px !important;
-}
+        return str(data)
 
-.stButton > button {
-    height: 56px;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: 800;
-}
+    if isinstance(data, dict):
+        for key in [
+            "output",
+            "answer",
+            "text",
+            "response"
+        ]:
+            if key in data:
+                return str(data[key]).strip()
 
-.results-title {
-    direction: rtl;
-    text-align: right;
-    font-size: 30px;
-    font-weight: 900;
-    margin-top: 30px;
-}
-
-.car-card {
-    direction: rtl;
-    margin-top: 20px;
-    padding: 26px;
-    border-radius: 24px;
-    border: 1px solid rgba(255,255,255,.12);
-
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(44,130,255,.12),
-            transparent 35%
-        ),
-        rgba(255,255,255,.035);
-
-    box-shadow:
-        0 15px 40px
-        rgba(0,0,0,.22);
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 15px;
-}
-
-.car-name {
-    font-size: 28px;
-    font-weight: 900;
-}
-
-.car-meta {
-    margin-top: 5px;
-    color: #9CA3AF;
-    font-size: 14px;
-}
-
-.best-badge {
-    padding: 8px 13px;
-    border-radius: 999px;
-    background: rgba(255,193,7,.15);
-    border: 1px solid rgba(255,193,7,.35);
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.price-row {
-    margin: 22px 0;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-}
-
-.price {
-    font-size: 40px;
-    font-weight: 950;
-}
-
-.currency {
-    color: #9CA3AF;
-    font-size: 17px;
-}
-
-.spec-grid {
-    display: grid;
-    grid-template-columns:
-        repeat(4, 1fr);
-    gap: 12px;
-}
-
-.spec-box {
-    padding: 14px;
-    border-radius: 16px;
-    text-align: center;
-    background: rgba(255,255,255,.045);
-    border: 1px solid rgba(255,255,255,.07);
-}
-
-.spec-icon {
-    font-size: 22px;
-}
-
-.spec-title {
-    margin-top: 4px;
-    font-size: 12px;
-    color: #8F98A5;
-}
-
-.spec-value {
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.reason-box {
-    margin-top: 18px;
-    padding: 16px;
-    border-radius: 16px;
-    background: rgba(46,204,113,.06);
-    border: 1px solid rgba(46,204,113,.17);
-}
-
-.reason-title {
-    font-weight: 900;
-    margin-bottom: 6px;
-}
-
-.reason-text {
-    color: #D7DCE4;
-    font-size: 14px;
-    line-height: 1.8;
-}
-
-.match-header {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 18px;
-    margin-bottom: 7px;
-    color: #BCC3CD;
-    font-size: 14px;
-}
-
-.progress {
-    width: 100%;
-    height: 10px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: rgba(255,255,255,.08);
-}
-
-.progress-fill {
-    height: 100%;
-    border-radius: 999px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #2ecc71,
-            #3498db
-        );
-}
-
-@media (max-width: 700px) {
-
-    .carwise-title {
-        font-size: 40px;
-    }
-
-    .spec-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
-
-    .card-header {
-        flex-direction: column;
-    }
-
-    .price {
-        font-size: 34px;
-    }
-}
-
-</style>
-""", unsafe_allow_html=True)
+    return str(data).strip()
 
 
-# =========================
-# Header
-# =========================
-st.markdown(
-    '<div class="carwise-title">'
-    '🚗 CarWise'
-    '</div>',
-    unsafe_allow_html=True
-)
+# =========================================================
+# واجهة التطبيق
+# =========================================================
 
 st.markdown(
-    '<div class="carwise-subtitle">'
-    'مستشارك الذكي لاختيار السيارة المناسبة'
-    '</div>',
-    unsafe_allow_html=True
-)
+    """
+<div class="hero-box">
 
-st.markdown("""
-<div class="info-box">
+<div class="hero-title">
+🚗 صف لنا السيارة التي تبحث عنها
+</div>
 
-<b>
-🚘 صف لنا السيارة التي تبحث عنها
-</b>
-
-<br>
-
+<div class="hero-text">
 اكتب ميزانيتك واستخدامك واحتياجاتك،
 وسيبحث CarWise عن أفضل السيارات المناسبة لك.
+</div>
 
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
-# =========================
-# User Input
-# =========================
 user_request = st.text_area(
     "ما السيارة التي تبحث عنها؟",
-
-    placeholder=(
-        "مثال: أبغى سيارة عائلية اقتصادية، "
-        "ميزانيتي 130 ألف ريال ومناسبة للسفر"
-    ),
-
-    height=130
+    height=120,
+    placeholder="مثال: أبي سيارة عائلية اقتصادية سعرها 130 ألف"
 )
 
 
-# =========================
-# n8n Production Webhook
-# =========================
-N8N_WEBHOOK_URL = (
-    "https://essa2030.app.n8n.cloud/"
-    "webhook/3ba5a8f7-d092-4aad-a307-d3f694a9d6f3"
-)
-
-
-# =========================
-# Search
-# =========================
-if st.button(
+search_button = st.button(
     "🔍 ابحث عن السيارة المناسبة",
     use_container_width=True
-):
+)
+
+
+# =========================================================
+# إرسال السؤال إلى n8n
+# =========================================================
+
+if search_button:
 
     if not user_request.strip():
 
         st.warning(
-            "اكتب متطلبات السيارة أولاً."
+            "اكتب طلبك أولًا."
         )
 
     else:
 
         with st.spinner(
-            "CarWise يبحث عن أفضل السيارات..."
+            "CarWise يبحث عن أفضل نتيجة..."
         ):
 
             try:
@@ -570,124 +544,139 @@ if st.button(
                     timeout=90
                 )
 
-                if response.status_code == 200:
+                response.raise_for_status()
 
-                    try:
+                answer = extract_agent_answer(
+                    response
+                )
 
-                        result = response.json()
+                # =========================================
+                # NO MATCH
+                # =========================================
 
-                        if isinstance(result, dict):
+                if answer.strip().upper() == "NO_MATCH":
 
-                            answer = (
-                                result.get("output")
-                                or result.get("text")
-                                or result.get("answer")
-                                or str(result)
-                            )
-
-                        else:
-
-                            answer = str(result)
-
-                    except Exception:
-
-                        answer = response.text
-
-
-                    # =========================
-                    # No Matches
-                    # =========================
-                    if "NO_MATCH" in answer.upper():
-
-                        st.warning(
-                            "لا توجد سيارة مطابقة بشكل مناسب "
-                            "في قاعدة البيانات الحالية."
-                        )
-
-                    else:
-
-                        cars = parse_car_blocks(answer)
-
-                        if cars:
-
-                            show_all = wants_all_cars(
-                                user_request
-                            )
-
-                            if show_all:
-
-                                cars_to_show = cars
-
-                            else:
-
-                                cars_to_show = cars[:3]
-
-
-                            st.success(
-                                f"✅ تم العثور على "
-                                f"{len(cars_to_show)} سيارة"
-                            )
-
-
-                            st.markdown(
-                                '<div class="results-title">'
-                                '🚘 توصيات CarWise'
-                                '</div>',
-                                unsafe_allow_html=True
-                            )
-
-
-                            for index, car in enumerate(
-                                cars_to_show,
-                                start=1
-                            ):
-
-                                render_car_card(
-                                    car,
-                                    index,
-                                    show_best_badge=not show_all
-                                )
-
-                        else:
-
-                            st.error(
-                                "تعذر قراءة نتيجة CarWise."
-                            )
-
-                            st.code(answer)
-
+                    st.markdown(
+                        """
+<div class="no-match">
+🚗 لم أجد سيارة في قاعدة بيانات CarWise تحقق جميع الشروط المطلوبة.
+جرّب تعديل أحد الشروط أو الميزانية.
+</div>
+""",
+                        unsafe_allow_html=True
+                    )
 
                 else:
 
-                    st.error(
-                        f"حدث خطأ أثناء البحث "
-                        f"({response.status_code})"
+                    # =====================================
+                    # محاولة قراءة بطاقات السيارات
+                    # =====================================
+
+                    cars = parse_car_blocks(
+                        answer
                     )
 
+                    cars = remove_duplicate_cars(
+                        cars
+                    )
+
+                    if cars:
+
+                        show_all = wants_all_cars(
+                            user_request
+                        )
+
+                        if show_all:
+                            cars_to_show = cars
+                        else:
+                            cars_to_show = cars[:3]
+
+                        st.markdown(
+                            f"""
+<div class="result-count">
+✅ تم العثور على {len(cars_to_show)} سيارة
+</div>
+""",
+                            unsafe_allow_html=True
+                        )
+
+                        st.markdown(
+                            """
+<div class="results-title">
+توصيات CarWise
+</div>
+""",
+                            unsafe_allow_html=True
+                        )
+
+                        for index, car in enumerate(
+                            cars_to_show,
+                            start=1
+                        ):
+
+                            render_car_card(
+                                car,
+                                index,
+                                show_best_badge=not show_all
+                            )
+
+                    else:
+
+                        # =================================
+                        # رد نصي طبيعي
+                        #
+                        # يشمل:
+                        # - سؤال خارج النطاق
+                        # - سؤال غامض
+                        # - طلب توضيح
+                        # - اعتذار
+                        # =================================
+
+                        clean_answer = html.escape(
+                            answer
+                        ).replace(
+                            "\n",
+                            "<br>"
+                        )
+
+                        st.markdown(
+                            f"""
+<div class="text-response">
+{clean_answer}
+</div>
+""",
+                            unsafe_allow_html=True
+                        )
 
             except requests.exceptions.Timeout:
 
-                st.error(
-                    "استغرق البحث وقتًا أطول من المتوقع."
+                st.markdown(
+                    """
+<div class="error-box">
+⏱️ استغرق CarWise وقتًا أطول من المتوقع. حاول مرة أخرى.
+</div>
+""",
+                    unsafe_allow_html=True
                 )
 
+            except requests.exceptions.RequestException:
+
+                st.markdown(
+                    """
+<div class="error-box">
+⚠️ تعذر الاتصال بـ CarWise حاليًا. حاول مرة أخرى.
+</div>
+""",
+                    unsafe_allow_html=True
+                )
 
             except Exception as e:
 
-                st.error(
-                    "تعذر الاتصال بخدمة CarWise."
+                st.markdown(
+                    """
+<div class="error-box">
+⚠️ حدث خطأ أثناء معالجة النتيجة.
+</div>
+""",
+                    unsafe_allow_html=True
                 )
-
-                st.caption(
-                    str(e)
-                )
-
-
-# =========================
-# Footer
-# =========================
-st.divider()
-
-st.caption(
-    "CarWise • AI Car Recommendation System"
-)
