@@ -760,8 +760,7 @@ if "messages" not in st.session_state:
 # الواجهة
 # =========================================================
 
-st.markdown(
-    """
+st.html("""
 <div class="logo-wrap">
     <div class="logo-name">Car<span>Wise</span></div>
     <div class="logo-tagline">AI CAR ADVISOR</div>
@@ -770,11 +769,7 @@ st.markdown(
 
 <div class="hero">
     <div class="hero-kicker">مستشارك الذكي للسيارات</div>
-
-    <div class="hero-title">
-        اختر السيارة المناسبة لك <span>بذكاء</span>
-    </div>
-
+    <div class="hero-title">اختر السيارة المناسبة لك <span>بذكاء</span></div>
     <div class="hero-text">
         اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة بيانات السيارات
         ليقترح عليك أفضل الخيارات المطابقة لشروطك.
@@ -785,26 +780,21 @@ st.markdown(
             <div class="feature-title">توصيات مخصصة</div>
             <div class="feature-sub">بناءً على احتياجك الفعلي</div>
         </div>
-
         <div class="feature">
             <div class="feature-title">مقارنة دقيقة</div>
             <div class="feature-sub">السعر والمواصفات والاستخدام</div>
         </div>
-
         <div class="feature">
             <div class="feature-title">بحث ذكي</div>
             <div class="feature-sub">داخل قاعدة بيانات CarWise</div>
         </div>
-
         <div class="feature">
             <div class="feature-title">نتيجة واضحة</div>
             <div class="feature-sub">مع سبب الاختيار ونسبة التطابق</div>
         </div>
     </div>
 </div>
-""",
-    unsafe_allow_html=True
-)
+""")
 
 
 # =========================================================
