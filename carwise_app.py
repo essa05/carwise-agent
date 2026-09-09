@@ -78,7 +78,7 @@ div.stButton>button{height:52px;border:0!important;border-radius:16px!important;
 .reason-box{border-radius:14px;padding:14px 15px;margin-top:10px;line-height:1.9;color:#e2e8f0;font-size:16px;background:rgba(34,197,94,.055);border:1px solid rgba(34,197,94,.12)}
 .match-row{margin-top:16px}.match-title{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px;color:#cbd5e1}.progress-bg{width:100%;height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#4ade80)}
 .text-response,.no-match,.error-box{padding:18px 20px;border-radius:16px;line-height:1.9;font-size:16px}.text-response{background:rgba(30,41,59,.70);border:1px solid rgba(148,163,184,.16)}.no-match{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.20)}.error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.20)}
-@media(max-width:700px){.site-logo-car{width:190px;height:86px}.site-logo-name{font-size:36px}.hero-box{padding:24px 20px}.hero-title{font-size:31px}.hero-icon{display:none}.spec-grid{grid-template-columns:1fr 1fr}.card-header{align-items:flex-start;flex-direction:column}}
+@media(max-width:700px){.site-logo-car{width:220px;height:96px}.site-logo-name{font-size:36px}.hero-box{padding:24px 20px}.hero-title{font-size:31px}.hero-icon{display:none}.spec-grid{grid-template-columns:1fr 1fr}.card-header{align-items:flex-start;flex-direction:column}}
 @media(max-width:480px){.spec-grid{grid-template-columns:1fr}}
 </style>
 """,
