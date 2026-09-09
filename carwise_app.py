@@ -37,13 +37,18 @@ header[data-testid="stHeader"]{background:transparent}
     text-align:center;
     margin:4px auto 26px;
 }
-.site-logo-icon{
-    width:94px;height:94px;margin:0 auto 10px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:52px;border-radius:28px;
-    background:linear-gradient(145deg,rgba(34,197,94,.18),rgba(15,23,42,.9));
-    border:1px solid rgba(74,222,128,.28);
-    box-shadow:0 16px 42px rgba(34,197,94,.13);
+.site-logo-car{
+    width:230px;
+    height:105px;
+    margin:0 auto 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.site-logo-car svg{
+    width:100%;
+    height:100%;
+    filter:drop-shadow(0 12px 24px rgba(34,197,94,.16));
 }
 .site-logo-name{
     font-size:44px;font-weight:950;letter-spacing:-1px;
@@ -73,7 +78,7 @@ div.stButton>button{height:52px;border:0!important;border-radius:16px!important;
 .reason-box{border-radius:14px;padding:14px 15px;margin-top:10px;line-height:1.9;color:#e2e8f0;font-size:16px;background:rgba(34,197,94,.055);border:1px solid rgba(34,197,94,.12)}
 .match-row{margin-top:16px}.match-title{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px;color:#cbd5e1}.progress-bg{width:100%;height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#4ade80)}
 .text-response,.no-match,.error-box{padding:18px 20px;border-radius:16px;line-height:1.9;font-size:16px}.text-response{background:rgba(30,41,59,.70);border:1px solid rgba(148,163,184,.16)}.no-match{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.20)}.error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.20)}
-@media(max-width:700px){.site-logo-icon{width:78px;height:78px;font-size:43px}.site-logo-name{font-size:36px}.hero-box{padding:24px 20px}.hero-title{font-size:31px}.hero-icon{display:none}.spec-grid{grid-template-columns:1fr 1fr}.card-header{align-items:flex-start;flex-direction:column}}
+@media(max-width:700px){.site-logo-car{width:190px;height:86px}.site-logo-name{font-size:36px}.hero-box{padding:24px 20px}.hero-title{font-size:31px}.hero-icon{display:none}.spec-grid{grid-template-columns:1fr 1fr}.card-header{align-items:flex-start;flex-direction:column}}
 @media(max-width:480px){.spec-grid{grid-template-columns:1fr}}
 </style>
 """,
@@ -351,7 +356,39 @@ def extract_agent_answer(response):
 st.markdown(
     """
 <div class="site-logo">
-    <div class="site-logo-icon">🚗</div>
+    <div class="site-logo-car">
+        <svg viewBox="0 0 260 110" xmlns="http://www.w3.org/2000/svg" aria-label="CarWise car logo">
+            <defs>
+                <linearGradient id="carBody" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#f8fafc"/>
+                    <stop offset="100%" stop-color="#94a3b8"/>
+                </linearGradient>
+                <linearGradient id="carAccent" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#22c55e"/>
+                    <stop offset="100%" stop-color="#4ade80"/>
+                </linearGradient>
+            </defs>
+
+            <path d="M35 70 L49 69 L68 43 Q73 35 85 35 H167 Q180 35 188 43 L210 67 L224 70 Q233 72 236 82 V88 H220
+                     Q216 101 201 101 Q186 101 181 88 H82 Q78 101 63 101 Q48 101 44 88 H28 V79 Q28 72 35 70Z"
+                  fill="url(#carBody)"/>
+
+            <path d="M82 43 H164 Q171 43 176 49 L190 66 H63 L75 48 Q78 43 82 43Z"
+                  fill="#0f172a"/>
+
+            <path d="M125 43 V66" stroke="#334155" stroke-width="3"/>
+
+            <path d="M39 75 H226" stroke="url(#carAccent)" stroke-width="4" stroke-linecap="round"/>
+
+            <circle cx="63" cy="88" r="14" fill="#0f172a" stroke="#334155" stroke-width="4"/>
+            <circle cx="63" cy="88" r="5" fill="#4ade80"/>
+
+            <circle cx="201" cy="88" r="14" fill="#0f172a" stroke="#334155" stroke-width="4"/>
+            <circle cx="201" cy="88" r="5" fill="#4ade80"/>
+
+            <path d="M207 67 H221" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+    </div>
     <div class="site-logo-name">Car<span>Wise</span></div>
     <div class="site-logo-tagline">AI CAR ADVISOR</div>
 </div>
@@ -363,7 +400,7 @@ st.markdown(
             <div class="hero-title">اختيار سيارتك صار <span>أسهل</span></div>
             <div class="hero-text">اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة السيارات ليعرض لك أفضل الخيارات المناسبة لك.</div>
         </div>
-        <div class="hero-icon">🚗</div>
+        <div class="hero-icon">AI</div>
     </div>
 </div>
 """,
@@ -371,8 +408,98 @@ st.markdown(
 )
 
 
+# =========================================================
+# ذاكرة المحادثة داخل Streamlit
+# =========================================================
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+def render_saved_answer(answer, original_request):
+    """عرض الرد بنفس شكل البطاقات حتى بعد إعادة تشغيل الصفحة."""
+
+    if str(answer).strip().upper() == "NO_MATCH":
+        st.markdown(
+            """
+<div class="no-match">
+🚗 لم أجد سيارة في قاعدة بيانات CarWise تحقق جميع الشروط المطلوبة.
+جرّب تعديل أحد الشروط أو الميزانية.
+</div>
+""",
+            unsafe_allow_html=True
+        )
+        return
+
+    cars = remove_duplicate_cars(
+        parse_car_blocks(str(answer))
+    )
+
+    if cars:
+        show_all = wants_all_cars(original_request)
+
+        if show_all:
+            cars_to_show = cars
+        else:
+            cars_to_show = cars[:3]
+
+        st.markdown(
+            f"""
+<div class="result-count">
+✅ تم العثور على {len(cars_to_show)} سيارة
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+        for index, car in enumerate(cars_to_show, start=1):
+            render_car_card(
+                car,
+                index,
+                show_best_badge=not show_all
+            )
+    else:
+        clean_answer = html.escape(
+            str(answer)
+        ).replace(
+            "\n",
+            "<br>"
+        )
+
+        st.markdown(
+            f"""
+<div class="text-response">
+{clean_answer}
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+
+# =========================================================
+# عرض المحادثة السابقة
+# =========================================================
+
+for message in st.session_state.messages:
+
+    if message["role"] == "user":
+        with st.chat_message("user"):
+            st.markdown(message["content"])
+
+    else:
+        with st.chat_message("assistant"):
+            render_saved_answer(
+                message["content"],
+                message.get("request", "")
+            )
+
+
+# =========================================================
+# إدخال المستخدم — Enter للإرسال
+# =========================================================
+
 user_request = st.chat_input(
-    "مثال: أبي سيارة عائلية اقتصادية سعرها 130 ألف"
+    "اكتب طلبك واضغط Enter..."
 )
 
 
@@ -382,149 +509,114 @@ user_request = st.chat_input(
 
 if user_request:
 
-    with st.spinner(
-        "CarWise يبحث عن أفضل نتيجة..."
-    ):
+    # حفظ سؤال المستخدم
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": user_request
+        }
+    )
 
-        try:
+    with st.chat_message("user"):
+        st.markdown(user_request)
 
-            payload = {
-                "chatInput": user_request
-            }
+    with st.chat_message("assistant"):
 
-            response = requests.post(
-                N8N_WEBHOOK_URL,
-                json=payload,
-                timeout=90
-            )
+        with st.spinner(
+            "CarWise يبحث عن أفضل نتيجة..."
+        ):
 
-            response.raise_for_status()
+            try:
 
-            answer = extract_agent_answer(
-                response
-            )
+                payload = {
+                    "chatInput": user_request
+                }
 
-            # =========================================
-            # NO MATCH
-            # =========================================
+                response = requests.post(
+                    N8N_WEBHOOK_URL,
+                    json=payload,
+                    timeout=90
+                )
 
-            if answer.strip().upper() == "NO_MATCH":
+                response.raise_for_status()
+
+                answer = extract_agent_answer(
+                    response
+                )
+
+                # حفظ رد CarWise
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": answer,
+                        "request": user_request
+                    }
+                )
+
+                render_saved_answer(
+                    answer,
+                    user_request
+                )
+
+            except requests.exceptions.Timeout:
+
+                error_message = "⏱️ استغرق CarWise وقتًا أطول من المتوقع. حاول مرة أخرى."
+
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": error_message,
+                        "request": user_request
+                    }
+                )
 
                 st.markdown(
-                    """
-<div class="no-match">
-🚗 لم أجد سيارة في قاعدة بيانات CarWise تحقق جميع الشروط المطلوبة.
-جرّب تعديل أحد الشروط أو الميزانية.
+                    f"""
+<div class="error-box">
+{error_message}
 </div>
 """,
                     unsafe_allow_html=True
                 )
 
-            else:
+            except requests.exceptions.RequestException:
 
-                # =====================================
-                # محاولة قراءة بطاقات السيارات
-                # =====================================
+                error_message = "⚠️ تعذر الاتصال بـ CarWise حاليًا. حاول مرة أخرى."
 
-                cars = parse_car_blocks(
-                    answer
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": error_message,
+                        "request": user_request
+                    }
                 )
 
-                cars = remove_duplicate_cars(
-                    cars
+                st.markdown(
+                    f"""
+<div class="error-box">
+{error_message}
+</div>
+""",
+                    unsafe_allow_html=True
                 )
 
-                if cars:
+            except Exception:
 
-                    show_all = wants_all_cars(
-                        user_request
-                    )
+                error_message = "⚠️ حدث خطأ أثناء معالجة النتيجة."
 
-                    if show_all:
-                        cars_to_show = cars
-                    else:
-                        cars_to_show = cars[:3]
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": error_message,
+                        "request": user_request
+                    }
+                )
 
-                    st.markdown(
-                        f"""
-<div class="result-count">
-✅ تم العثور على {len(cars_to_show)} سيارة
-</div>
-""",
-                        unsafe_allow_html=True
-                    )
-
-                    st.markdown(
-                        """
-<div class="results-title">
-توصيات CarWise
-</div>
-""",
-                        unsafe_allow_html=True
-                    )
-
-                    for index, car in enumerate(
-                        cars_to_show,
-                        start=1
-                    ):
-
-                        render_car_card(
-                            car,
-                            index,
-                            show_best_badge=not show_all
-                        )
-
-                else:
-
-                    # =================================
-                    # رد نصي طبيعي
-                    # =================================
-
-                    clean_answer = html.escape(
-                        answer
-                    ).replace(
-                        "\n",
-                        "<br>"
-                    )
-
-                    st.markdown(
-                        f"""
-<div class="text-response">
-{clean_answer}
-</div>
-""",
-                        unsafe_allow_html=True
-                    )
-
-        except requests.exceptions.Timeout:
-
-            st.markdown(
-                """
+                st.markdown(
+                    f"""
 <div class="error-box">
-⏱️ استغرق CarWise وقتًا أطول من المتوقع. حاول مرة أخرى.
+{error_message}
 </div>
 """,
-                unsafe_allow_html=True
-            )
-
-        except requests.exceptions.RequestException:
-
-            st.markdown(
-                """
-<div class="error-box">
-⚠️ تعذر الاتصال بـ CarWise حاليًا. حاول مرة أخرى.
-</div>
-""",
-                unsafe_allow_html=True
-            )
-
-        except Exception:
-
-            st.markdown(
-                """
-<div class="error-box">
-⚠️ حدث خطأ أثناء معالجة النتيجة.
-</div>
-""",
-                unsafe_allow_html=True
-            )
+                    unsafe_allow_html=True
+                )
