@@ -10,8 +10,8 @@ import streamlit as st
 
 st.set_page_config(
     page_title="CarWise",
-    page_icon="🚗",
-    layout="centered"
+    page_icon="🚘",
+    layout="wide"
 )
 
 
@@ -23,118 +23,415 @@ N8N_WEBHOOK_URL = "https://essa2030.app.n8n.cloud/webhook/3ba5a8f7-d092-4aad-a30
 
 
 # =========================================================
-# CSS
+# CSS — تصميم احترافي
 # =========================================================
 
 st.markdown(
     """
 <style>
-.stApp{direction:rtl;background:radial-gradient(circle at 85% 8%,rgba(34,197,94,.10),transparent 28%),linear-gradient(180deg,#0a0f1a 0%,#0b1220 100%);color:#f8fafc}
-.block-container{max-width:980px;padding-top:2rem;padding-bottom:4rem}
-header[data-testid="stHeader"]{background:transparent}
+:root{
+    --bg:#08111f;
+    --bg2:#0c1727;
+    --panel:rgba(15,23,42,.78);
+    --panel2:rgba(20,31,49,.82);
+    --border:rgba(148,163,184,.15);
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --green:#22c55e;
+    --green2:#34d399;
+    --cyan:#38bdf8;
+}
 
-.site-logo{
+html, body, [class*="css"]{
+    font-family:"Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.stApp{
+    direction:rtl;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 88% 7%, rgba(16,185,129,.13), transparent 25%),
+        radial-gradient(circle at 10% 15%, rgba(56,189,248,.08), transparent 24%),
+        linear-gradient(180deg,#07101d 0%,#08111f 45%,#0b1523 100%);
+}
+
+header[data-testid="stHeader"]{
+    background:transparent;
+}
+
+.block-container{
+    max-width:1180px;
+    padding-top:1.8rem;
+    padding-bottom:7rem;
+}
+
+/* =========================
+   العلامة التجارية
+========================= */
+
+.logo-wrap{
     text-align:center;
-    margin:4px auto 26px;
+    margin:6px auto 24px;
 }
 
-.site-logo-car{
-    width:250px;
-    height:110px;
-    margin:0 auto 12px;
+.logo-name{
+    font-size:56px;
+    line-height:1;
+    font-weight:950;
+    letter-spacing:-2px;
+    color:#f8fafc;
+    text-shadow:0 8px 26px rgba(0,0,0,.28);
+}
+
+.logo-name span{
+    color:var(--green2);
+}
+
+.logo-tagline{
+    margin-top:9px;
+    color:#64748b;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:4px;
+}
+
+.logo-line{
+    width:150px;
+    height:3px;
+    margin:14px auto 0;
+    border-radius:999px;
+    background:linear-gradient(90deg,transparent,var(--green),transparent);
+}
+
+/* =========================
+   Hero
+========================= */
+
+.hero{
     position:relative;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius:30px;
+    padding:38px 38px 34px;
+    margin-bottom:22px;
+    background:
+        linear-gradient(135deg,rgba(16,185,129,.10),transparent 38%),
+        linear-gradient(180deg,rgba(15,23,42,.92),rgba(10,18,31,.90));
+    box-shadow:0 26px 70px rgba(0,0,0,.26);
 }
-.car-shell{
-    position:absolute;
-    left:20px;
-    right:20px;
-    bottom:24px;
-    height:42px;
-    border-radius:22px 30px 12px 12px;
-    background:linear-gradient(135deg,#e2e8f0,#94a3b8);
-    box-shadow:0 14px 28px rgba(0,0,0,.28);
-}
-.car-roof{
-    position:absolute;
-    width:118px;
-    height:48px;
-    left:66px;
-    bottom:55px;
-    border-radius:42px 42px 8px 8px;
-    background:linear-gradient(135deg,#cbd5e1,#94a3b8);
-    transform:skewX(-9deg);
-}
-.car-window{
-    position:absolute;
-    width:88px;
-    height:30px;
-    left:82px;
-    bottom:64px;
-    border-radius:28px 28px 7px 7px;
-    background:#0f172a;
-    transform:skewX(-9deg);
-}
-.car-line{
-    position:absolute;
-    left:35px;
-    right:35px;
-    bottom:38px;
-    height:4px;
-    border-radius:99px;
-    background:linear-gradient(90deg,#22c55e,#4ade80);
-}
-.wheel{
-    position:absolute;
-    width:30px;
-    height:30px;
-    bottom:10px;
-    border-radius:50%;
-    background:#0f172a;
-    border:5px solid #334155;
-    box-sizing:border-box;
-}
-.wheel::after{
+
+.hero:before{
     content:"";
     position:absolute;
-    width:8px;
-    height:8px;
+    width:320px;
+    height:320px;
     border-radius:50%;
-    background:#4ade80;
-    left:6px;
-    top:6px;
-}
-.wheel-left{left:52px}
-.wheel-right{right:52px}
-.site-logo-name{
-    font-size:44px;font-weight:950;letter-spacing:-1px;
-    color:#f8fafc;line-height:1.05;
-}
-.site-logo-name span{color:#4ade80}
-.site-logo-tagline{
-    margin-top:7px;font-size:11px;font-weight:800;
-    letter-spacing:3px;color:#64748b;
+    left:-120px;
+    top:-170px;
+    background:rgba(34,197,94,.08);
+    filter:blur(10px);
 }
 
-.hero-box{border:1px solid rgba(148,163,184,.16);border-radius:26px;padding:34px 32px;margin-bottom:26px;background:linear-gradient(135deg,rgba(34,197,94,.11),rgba(15,23,42,.96) 55%);box-shadow:0 18px 55px rgba(0,0,0,.28)}
-.brand-row{display:flex;align-items:center;justify-content:space-between;gap:18px}.brand-copy{flex:1}
-.brand-pill{display:inline-block;padding:7px 12px;border-radius:999px;margin-bottom:14px;font-size:15px;font-weight:700;color:#bbf7d0;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.24)}
-.hero-title{font-size:40px;line-height:1.35;font-weight:900;margin:0 0 10px}.hero-title span{color:#4ade80}
-.hero-text{font-size:18px;color:#cbd5e1;line-height:1.9;max-width:720px}.hero-icon{min-width:82px;width:82px;height:82px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:42px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
-div[data-testid="stTextArea"] label p{font-size:17px!important;font-weight:800!important;color:#e2e8f0!important}
-div[data-testid="stTextArea"] textarea{min-height:135px!important;border-radius:18px!important;border:1px solid rgba(148,163,184,.18)!important;background:rgba(15,23,42,.78)!important;color:#f8fafc!important;font-size:17px!important;line-height:1.8!important;padding:16px 18px!important}
-div[data-testid="stTextArea"] textarea:focus{border-color:rgba(34,197,94,.55)!important;box-shadow:0 0 0 3px rgba(34,197,94,.10)!important}
-div.stButton>button{height:52px;border:0!important;border-radius:16px!important;font-size:17px!important;font-weight:900!important;color:#fff!important;background:linear-gradient(135deg,#22c55e,#16a34a)!important;box-shadow:0 10px 28px rgba(34,197,94,.18)}
-.results-title{font-size:30px;font-weight:900;margin:28px 0 18px}.result-count{padding:13px 16px;border-radius:14px;margin:22px 0 16px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.22);color:#dcfce7;font-weight:800}
-.car-card{border:1px solid rgba(148,163,184,.16);border-radius:22px;padding:22px;margin-bottom:18px;background:linear-gradient(180deg,rgba(30,41,59,.66),rgba(15,23,42,.82));box-shadow:0 14px 34px rgba(0,0,0,.20)}
-.card-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}.car-name{font-size:27px;font-weight:900;color:#f8fafc}
-.best-badge{display:inline-block;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;color:#bbf7d0;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.25)}
-.price{font-size:25px;font-weight:900;color:#4ade80;margin-bottom:16px}.spec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
-.spec-item{border-radius:13px;padding:12px 13px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.spec-label{font-size:13px;color:#94a3b8;margin-bottom:5px}.spec-value{font-size:16px;font-weight:800;color:#e2e8f0}
-.reason-box{border-radius:14px;padding:14px 15px;margin-top:10px;line-height:1.9;color:#e2e8f0;font-size:16px;background:rgba(34,197,94,.055);border:1px solid rgba(34,197,94,.12)}
-.match-row{margin-top:16px}.match-title{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px;color:#cbd5e1}.progress-bg{width:100%;height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#4ade80)}
-.text-response,.no-match,.error-box{padding:18px 20px;border-radius:16px;line-height:1.9;font-size:16px}.text-response{background:rgba(30,41,59,.70);border:1px solid rgba(148,163,184,.16)}.no-match{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.20)}.error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.20)}
-@media(max-width:700px){.site-logo-car{width:220px;height:96px}.site-logo-name{font-size:36px}.hero-box{padding:24px 20px}.hero-title{font-size:31px}.hero-icon{display:none}.spec-grid{grid-template-columns:1fr 1fr}.card-header{align-items:flex-start;flex-direction:column}}
-@media(max-width:480px){.spec-grid{grid-template-columns:1fr}}
+.hero-kicker{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 12px;
+    border-radius:999px;
+    margin-bottom:16px;
+    font-size:13px;
+    font-weight:800;
+    color:#bbf7d0;
+    background:rgba(34,197,94,.09);
+    border:1px solid rgba(34,197,94,.22);
+}
+
+.hero-title{
+    position:relative;
+    z-index:1;
+    font-size:38px;
+    line-height:1.4;
+    font-weight:950;
+    margin:0 0 10px;
+}
+
+.hero-title span{
+    color:var(--green2);
+}
+
+.hero-text{
+    position:relative;
+    z-index:1;
+    max-width:820px;
+    margin:0;
+    font-size:18px;
+    line-height:1.9;
+    color:#cbd5e1;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+    margin-top:24px;
+}
+
+.feature{
+    border:1px solid rgba(148,163,184,.10);
+    border-radius:16px;
+    padding:13px 14px;
+    background:rgba(255,255,255,.025);
+}
+
+.feature-title{
+    font-size:14px;
+    font-weight:850;
+    color:#f8fafc;
+}
+
+.feature-sub{
+    margin-top:4px;
+    font-size:12px;
+    color:#94a3b8;
+}
+
+/* =========================
+   Chat input
+========================= */
+
+div[data-testid="stChatInput"]{
+    max-width:1180px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+div[data-testid="stChatInput"] > div{
+    border-radius:18px !important;
+    border:1px solid rgba(148,163,184,.18) !important;
+    background:rgba(17,24,39,.93) !important;
+    box-shadow:0 16px 40px rgba(0,0,0,.22);
+}
+
+div[data-testid="stChatInput"] textarea{
+    font-size:17px !important;
+    color:#f8fafc !important;
+}
+
+div[data-testid="stChatInput"] button{
+    border-radius:12px !important;
+}
+
+/* =========================
+   Chat messages
+========================= */
+
+[data-testid="stChatMessage"]{
+    background:rgba(15,23,42,.48);
+    border:1px solid rgba(148,163,184,.10);
+    border-radius:18px;
+    padding:8px 12px;
+    margin-bottom:12px;
+}
+
+/* =========================
+   النتائج
+========================= */
+
+.result-count{
+    padding:13px 16px;
+    border-radius:14px;
+    margin:10px 0 16px;
+    background:rgba(34,197,94,.09);
+    border:1px solid rgba(34,197,94,.20);
+    color:#dcfce7;
+    font-weight:850;
+    font-size:15px;
+}
+
+.results-title{
+    font-size:26px;
+    font-weight:950;
+    margin:14px 0 16px;
+}
+
+.car-card{
+    border:1px solid rgba(148,163,184,.14);
+    border-radius:22px;
+    padding:22px;
+    margin-bottom:18px;
+    background:
+        linear-gradient(180deg,rgba(30,41,59,.68),rgba(15,23,42,.88));
+    box-shadow:0 18px 42px rgba(0,0,0,.20);
+}
+
+.card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:12px;
+}
+
+.car-name{
+    font-size:25px;
+    font-weight:950;
+    color:#f8fafc;
+}
+
+.best-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:7px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:850;
+    color:#bbf7d0;
+    background:rgba(34,197,94,.10);
+    border:1px solid rgba(34,197,94,.24);
+}
+
+.price{
+    font-size:24px;
+    font-weight:950;
+    color:#4ade80;
+    margin-bottom:16px;
+}
+
+.spec-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:16px;
+}
+
+.spec-item{
+    border-radius:14px;
+    padding:12px 13px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.055);
+}
+
+.spec-label{
+    font-size:12px;
+    color:#94a3b8;
+    margin-bottom:5px;
+}
+
+.spec-value{
+    font-size:15px;
+    font-weight:850;
+    color:#e2e8f0;
+}
+
+.reason-box{
+    border-radius:15px;
+    padding:15px 16px;
+    margin-top:10px;
+    background:rgba(34,197,94,.05);
+    border:1px solid rgba(34,197,94,.12);
+    line-height:1.9;
+    color:#e2e8f0;
+    font-size:15px;
+}
+
+.match-row{
+    margin-top:16px;
+}
+
+.match-title{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+    font-size:13px;
+    color:#cbd5e1;
+}
+
+.progress-bg{
+    width:100%;
+    height:9px;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,#16a34a,#4ade80);
+}
+
+.text-response{
+    padding:16px 18px;
+    border-radius:15px;
+    line-height:1.9;
+    font-size:16px;
+    color:#e2e8f0;
+    background:rgba(30,41,59,.62);
+    border:1px solid rgba(148,163,184,.12);
+}
+
+.no-match{
+    padding:16px 18px;
+    border-radius:15px;
+    line-height:1.8;
+    background:rgba(245,158,11,.08);
+    border:1px solid rgba(245,158,11,.18);
+}
+
+.error-box{
+    padding:16px 18px;
+    border-radius:15px;
+    background:rgba(239,68,68,.08);
+    border:1px solid rgba(239,68,68,.18);
+}
+
+.small-note{
+    margin-top:10px;
+    font-size:12px;
+    color:#64748b;
+    text-align:center;
+}
+
+@media(max-width:850px){
+    .feature-grid{
+        grid-template-columns:1fr 1fr;
+    }
+    .spec-grid{
+        grid-template-columns:1fr 1fr;
+    }
+    .logo-name{
+        font-size:46px;
+    }
+    .hero-title{
+        font-size:31px;
+    }
+}
+
+@media(max-width:520px){
+    .block-container{
+        padding-top:1rem;
+    }
+    .logo-name{
+        font-size:40px;
+    }
+    .hero{
+        padding:26px 20px 24px;
+    }
+    .hero-title{
+        font-size:27px;
+    }
+    .hero-text{
+        font-size:16px;
+    }
+    .feature-grid,
+    .spec-grid{
+        grid-template-columns:1fr;
+    }
+    .card-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+}
 </style>
 """,
     unsafe_allow_html=True
@@ -162,7 +459,7 @@ def format_price(value):
         try:
             number = int(match.group())
             return f"{number:,} ريال"
-        except:
+        except Exception:
             pass
 
     return safe(value)
@@ -170,10 +467,9 @@ def format_price(value):
 
 def get_score(value):
     try:
-        score = int(
-            re.search(r"\d+", str(value)).group()
-        )
-    except:
+        match = re.search(r"\d+", str(value))
+        score = int(match.group()) if match else 0
+    except Exception:
         score = 0
 
     return max(0, min(score, 100))
@@ -206,7 +502,7 @@ def wants_all_cars(user_request):
 def parse_car_blocks(answer):
     blocks = re.findall(
         r"CAR_START(.*?)CAR_END",
-        answer,
+        str(answer),
         re.IGNORECASE | re.DOTALL
     )
 
@@ -245,10 +541,6 @@ def parse_car_blocks(answer):
     return cars
 
 
-# =========================================================
-# إزالة السيارات المكررة
-# =========================================================
-
 def remove_duplicate_cars(cars):
     unique = []
     seen = set()
@@ -282,6 +574,8 @@ def render_car_card(car, index, show_best_badge=True):
     fuel = safe(car.get("FuelEconomy"))
     transmission = safe(car.get("Transmission"))
     seats = safe(car.get("Seats"))
+
+    # مهم: السبب يعرض كما أرسله الـAgent بدون استبدال أو تغيير
     reason = safe(car.get("Reason"))
 
     score = get_score(car.get("MatchScore"))
@@ -289,87 +583,78 @@ def render_car_card(car, index, show_best_badge=True):
     badge = ""
 
     if index == 1 and show_best_badge:
-        badge = '<span class="best-badge">⭐ أفضل تطابق</span>'
+        badge = '<span class="best-badge">أفضل تطابق</span>'
 
     card_html = f"""
 <div class="car-card">
-
-<div class="card-header">
-    <div class="car-name">🚘 {brand} {model}</div>
-    {badge}
-</div>
-
-<div class="price">
-    💰 {price}
-</div>
-
-<div class="spec-grid">
-
-    <div class="spec-item">
-        <div class="spec-label">السنة</div>
-        <div class="spec-value">{year}</div>
+    <div class="card-header">
+        <div class="car-name">{brand} {model}</div>
+        {badge}
     </div>
 
-    <div class="spec-item">
-        <div class="spec-label">نوع السيارة</div>
-        <div class="spec-value">{body_type}</div>
+    <div class="price">{price}</div>
+
+    <div class="spec-grid">
+        <div class="spec-item">
+            <div class="spec-label">السنة</div>
+            <div class="spec-value">{year}</div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-label">نوع السيارة</div>
+            <div class="spec-value">{body_type}</div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-label">الاستخدام المناسب</div>
+            <div class="spec-value">{best_use}</div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-label">اقتصاد الوقود</div>
+            <div class="spec-value">{fuel}</div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-label">ناقل الحركة</div>
+            <div class="spec-value">{transmission}</div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-label">المقاعد</div>
+            <div class="spec-value">{seats}</div>
+        </div>
     </div>
 
-    <div class="spec-item">
-        <div class="spec-label">الاستخدام المناسب</div>
-        <div class="spec-value">{best_use}</div>
+    <div class="reason-box">
+        <strong>لماذا اخترناها لك؟</strong><br>
+        {reason}
     </div>
 
-    <div class="spec-item">
-        <div class="spec-label">اقتصاد الوقود</div>
-        <div class="spec-value">{fuel}</div>
+    <div class="match-row">
+        <div class="match-title">
+            <span>نسبة التطابق</span>
+            <span>{score}%</span>
+        </div>
+
+        <div class="progress-bg">
+            <div class="progress-fill" style="width:{score}%"></div>
+        </div>
     </div>
-
-    <div class="spec-item">
-        <div class="spec-label">ناقل الحركة</div>
-        <div class="spec-value">{transmission}</div>
-    </div>
-
-    <div class="spec-item">
-        <div class="spec-label">المقاعد</div>
-        <div class="spec-value">{seats}</div>
-    </div>
-
-</div>
-
-<div class="reason-box">
-    <strong>لماذا تناسبك؟</strong><br>
-    {reason}
-</div>
-
-<div class="match-row">
-
-    <div class="match-title">
-        <span>نسبة التطابق</span>
-        <span>{score}%</span>
-    </div>
-
-    <div class="progress-bg">
-        <div class="progress-fill" style="width:{score}%"></div>
-    </div>
-
-</div>
-
 </div>
 """
 
-    # هذا هو التعديل الوحيد في عرض البطاقة
     st.html(card_html)
 
 
 # =========================================================
-# استخراج الرد من n8n
+# استخراج رد n8n
 # =========================================================
 
 def extract_agent_answer(response):
     try:
         data = response.json()
-    except:
+    except Exception:
         return response.text.strip()
 
     if isinstance(data, str):
@@ -380,24 +665,14 @@ def extract_agent_answer(response):
             first = data[0]
 
             if isinstance(first, dict):
-                for key in [
-                    "output",
-                    "answer",
-                    "text",
-                    "response"
-                ]:
+                for key in ["output", "answer", "text", "response"]:
                     if key in first:
                         return str(first[key]).strip()
 
         return str(data)
 
     if isinstance(data, dict):
-        for key in [
-            "output",
-            "answer",
-            "text",
-            "response"
-        ]:
+        for key in ["output", "answer", "text", "response"]:
             if key in data:
                 return str(data[key]).strip()
 
@@ -405,56 +680,15 @@ def extract_agent_answer(response):
 
 
 # =========================================================
-# واجهة التطبيق
+# عرض الرد
 # =========================================================
 
-st.markdown(
-    """
-
-<div class="site-logo">
-    <div class="site-logo-car">
-        <div class="car-roof"></div>
-        <div class="car-window"></div>
-        <div class="car-shell"></div>
-        <div class="car-line"></div>
-        <div class="wheel wheel-left"></div>
-        <div class="wheel wheel-right"></div>
-    </div>
-    <div class="site-logo-name">Car<span>Wise</span></div>
-    <div class="site-logo-tagline">AI CAR ADVISOR</div>
-</div>
-
-<div class="hero-box">
-    <div class="brand-row">
-        <div class="brand-copy">
-            <div class="brand-pill">CarWise • مستشارك الذكي للسيارات</div>
-            <div class="hero-title">اختيار سيارتك صار <span>أسهل</span></div>
-            <div class="hero-text">اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة السيارات ليعرض لك أفضل الخيارات المناسبة لك.</div>
-        </div>
-        <div class="hero-icon">AI</div>
-    </div>
-</div>
-""",
-    unsafe_allow_html=True
-)
-
-
-# =========================================================
-# ذاكرة المحادثة داخل Streamlit
-# =========================================================
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-
-def render_saved_answer(answer, original_request):
-    """عرض الرد بنفس شكل البطاقات حتى بعد إعادة تشغيل الصفحة."""
-
+def render_answer(answer, original_request):
     if str(answer).strip().upper() == "NO_MATCH":
         st.markdown(
             """
 <div class="no-match">
-🚗 لم أجد سيارة في قاعدة بيانات CarWise تحقق جميع الشروط المطلوبة.
+لم أجد سيارة في قاعدة بيانات CarWise تحقق جميع الشروط المطلوبة.
 جرّب تعديل أحد الشروط أو الميزانية.
 </div>
 """,
@@ -463,7 +697,7 @@ def render_saved_answer(answer, original_request):
         return
 
     cars = remove_duplicate_cars(
-        parse_car_blocks(str(answer))
+        parse_car_blocks(answer)
     )
 
     if cars:
@@ -477,11 +711,17 @@ def render_saved_answer(answer, original_request):
         st.markdown(
             f"""
 <div class="result-count">
-✅ تم العثور على {len(cars_to_show)} سيارة
+تم العثور على {len(cars_to_show)} سيارة
 </div>
 """,
             unsafe_allow_html=True
         )
+
+        if not show_all:
+            st.markdown(
+                '<div class="results-title">توصيات CarWise</div>',
+                unsafe_allow_html=True
+            )
 
         for index, car in enumerate(cars_to_show, start=1):
             render_car_card(
@@ -489,6 +729,7 @@ def render_saved_answer(answer, original_request):
                 index,
                 show_best_badge=not show_all
             )
+
     else:
         clean_answer = html.escape(
             str(answer)
@@ -508,6 +749,65 @@ def render_saved_answer(answer, original_request):
 
 
 # =========================================================
+# ذاكرة المحادثة داخل الجلسة
+# =========================================================
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+# =========================================================
+# الواجهة
+# =========================================================
+
+st.markdown(
+    """
+<div class="logo-wrap">
+    <div class="logo-name">Car<span>Wise</span></div>
+    <div class="logo-tagline">AI CAR ADVISOR</div>
+    <div class="logo-line"></div>
+</div>
+
+<div class="hero">
+    <div class="hero-kicker">مستشارك الذكي للسيارات</div>
+
+    <div class="hero-title">
+        اختر السيارة المناسبة لك <span>بذكاء</span>
+    </div>
+
+    <div class="hero-text">
+        اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة بيانات السيارات
+        ليقترح عليك أفضل الخيارات المطابقة لشروطك.
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature">
+            <div class="feature-title">توصيات مخصصة</div>
+            <div class="feature-sub">بناءً على احتياجك الفعلي</div>
+        </div>
+
+        <div class="feature">
+            <div class="feature-title">مقارنة دقيقة</div>
+            <div class="feature-sub">السعر والمواصفات والاستخدام</div>
+        </div>
+
+        <div class="feature">
+            <div class="feature-title">بحث ذكي</div>
+            <div class="feature-sub">داخل قاعدة بيانات CarWise</div>
+        </div>
+
+        <div class="feature">
+            <div class="feature-title">نتيجة واضحة</div>
+            <div class="feature-sub">مع سبب الاختيار ونسبة التطابق</div>
+        </div>
+    </div>
+</div>
+""",
+    unsafe_allow_html=True
+)
+
+
+# =========================================================
 # عرض المحادثة السابقة
 # =========================================================
 
@@ -519,18 +819,18 @@ for message in st.session_state.messages:
 
     else:
         with st.chat_message("assistant"):
-            render_saved_answer(
+            render_answer(
                 message["content"],
                 message.get("request", "")
             )
 
 
 # =========================================================
-# إدخال المستخدم — Enter للإرسال
+# إدخال المستخدم
 # =========================================================
 
 user_request = st.chat_input(
-    "اكتب طلبك واضغط Enter..."
+    "مثال: أبي سيارة عائلية اقتصادية سعرها 130 ألف..."
 )
 
 
@@ -540,7 +840,6 @@ user_request = st.chat_input(
 
 if user_request:
 
-    # حفظ سؤال المستخدم
     st.session_state.messages.append(
         {
             "role": "user",
@@ -554,7 +853,7 @@ if user_request:
     with st.chat_message("assistant"):
 
         with st.spinner(
-            "CarWise يبحث عن أفضل نتيجة..."
+            "CarWise يبحث عن أفضل الخيارات..."
         ):
 
             try:
@@ -575,7 +874,6 @@ if user_request:
                     response
                 )
 
-                # حفظ رد CarWise
                 st.session_state.messages.append(
                     {
                         "role": "assistant",
@@ -584,70 +882,40 @@ if user_request:
                     }
                 )
 
-                render_saved_answer(
+                render_answer(
                     answer,
                     user_request
                 )
 
             except requests.exceptions.Timeout:
 
-                error_message = "⏱️ استغرق CarWise وقتًا أطول من المتوقع. حاول مرة أخرى."
-
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": error_message,
-                        "request": user_request
-                    }
-                )
+                error_message = "استغرق CarWise وقتًا أطول من المتوقع. حاول مرة أخرى."
 
                 st.markdown(
-                    f"""
-<div class="error-box">
-{error_message}
-</div>
-""",
+                    f'<div class="error-box">{error_message}</div>',
                     unsafe_allow_html=True
                 )
 
             except requests.exceptions.RequestException:
 
-                error_message = "⚠️ تعذر الاتصال بـ CarWise حاليًا. حاول مرة أخرى."
-
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": error_message,
-                        "request": user_request
-                    }
-                )
+                error_message = "تعذر الاتصال بـ CarWise حاليًا. حاول مرة أخرى."
 
                 st.markdown(
-                    f"""
-<div class="error-box">
-{error_message}
-</div>
-""",
+                    f'<div class="error-box">{error_message}</div>',
                     unsafe_allow_html=True
                 )
 
             except Exception:
 
-                error_message = "⚠️ حدث خطأ أثناء معالجة النتيجة."
-
-                st.session_state.messages.append(
-                    {
-                        "role": "assistant",
-                        "content": error_message,
-                        "request": user_request
-                    }
-                )
+                error_message = "حدث خطأ أثناء معالجة النتيجة."
 
                 st.markdown(
-                    f"""
-<div class="error-box">
-{error_message}
-</div>
-""",
+                    f'<div class="error-box">{error_message}</div>',
                     unsafe_allow_html=True
                 )
+
+
+st.markdown(
+    '<div class="small-note">CarWise • توصيات مبنية على بيانات قاعدة المشروع</div>',
+    unsafe_allow_html=True
+)
