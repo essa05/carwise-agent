@@ -29,183 +29,29 @@ N8N_WEBHOOK_URL = "https://essa2030.app.n8n.cloud/webhook/3ba5a8f7-d092-4aad-a30
 st.markdown(
     """
 <style>
-
-.stApp {
-    direction: rtl;
-}
-
-.block-container {
-    max-width: 1100px;
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-}
-
-.hero-box {
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 22px;
-    padding: 28px;
-    margin-bottom: 28px;
-    background: rgba(255,255,255,0.025);
-}
-
-.hero-title {
-    font-size: 28px;
-    font-weight: 800;
-    margin-bottom: 10px;
-}
-
-.hero-text {
-    font-size: 16px;
-    opacity: 0.85;
-    line-height: 1.8;
-}
-
-.results-title {
-    font-size: 25px;
-    font-weight: 800;
-    margin-top: 24px;
-    margin-bottom: 20px;
-}
-
-.result-count {
-    padding: 12px 16px;
-    border-radius: 14px;
-    margin-bottom: 20px;
-    background: rgba(35, 170, 90, 0.13);
-    border: 1px solid rgba(35, 170, 90, 0.30);
-    font-weight: 700;
-}
-
-.car-card {
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 20px;
-    background: rgba(255,255,255,0.035);
-}
-
-.card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 16px;
-}
-
-.car-name {
-    font-size: 24px;
-    font-weight: 800;
-}
-
-.best-badge {
-    display: inline-block;
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 700;
-    background: rgba(35, 170, 90, 0.15);
-    border: 1px solid rgba(35, 170, 90, 0.35);
-}
-
-.price {
-    font-size: 23px;
-    font-weight: 800;
-    margin-bottom: 16px;
-}
-
-.spec-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-bottom: 18px;
-}
-
-.spec-item {
-    border-radius: 12px;
-    padding: 11px 13px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-}
-
-.spec-label {
-    font-size: 12px;
-    opacity: 0.60;
-    margin-bottom: 4px;
-}
-
-.spec-value {
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.reason-box {
-    border-radius: 13px;
-    padding: 14px;
-    margin-top: 10px;
-    background: rgba(255,255,255,0.035);
-    line-height: 1.8;
-}
-
-.match-row {
-    margin-top: 16px;
-}
-
-.match-title {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 7px;
-    font-size: 13px;
-}
-
-.progress-bg {
-    width: 100%;
-    height: 9px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.10);
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: currentColor;
-}
-
-.text-response {
-    padding: 20px;
-    border-radius: 16px;
-    line-height: 1.9;
-    font-size: 16px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.10);
-}
-
-.no-match {
-    padding: 20px;
-    border-radius: 16px;
-    line-height: 1.8;
-    background: rgba(255, 180, 0, 0.08);
-    border: 1px solid rgba(255, 180, 0, 0.25);
-}
-
-.error-box {
-    padding: 18px;
-    border-radius: 16px;
-    background: rgba(255, 70, 70, 0.10);
-    border: 1px solid rgba(255, 70, 70, 0.25);
-}
-
-@media (max-width: 700px) {
-    .spec-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .card-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-}
-
+.stApp{direction:rtl;background:radial-gradient(circle at 85% 8%,rgba(34,197,94,.10),transparent 28%),linear-gradient(180deg,#0a0f1a 0%,#0b1220 100%);color:#f8fafc}
+.block-container{max-width:980px;padding-top:2rem;padding-bottom:4rem}
+header[data-testid="stHeader"]{background:transparent}
+.hero-box{border:1px solid rgba(148,163,184,.16);border-radius:26px;padding:34px 32px;margin-bottom:26px;background:linear-gradient(135deg,rgba(34,197,94,.11),rgba(15,23,42,.96) 55%);box-shadow:0 18px 55px rgba(0,0,0,.28)}
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:18px}.brand-copy{flex:1}
+.brand-pill{display:inline-block;padding:7px 12px;border-radius:999px;margin-bottom:14px;font-size:13px;font-weight:700;color:#bbf7d0;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.24)}
+.hero-title{font-size:34px;line-height:1.35;font-weight:900;margin:0 0 10px}.hero-title span{color:#4ade80}
+.hero-text{font-size:16px;color:#cbd5e1;line-height:1.9;max-width:720px}.hero-icon{min-width:82px;width:82px;height:82px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:42px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+div[data-testid="stTextArea"] label p{font-size:15px!important;font-weight:800!important;color:#e2e8f0!important}
+div[data-testid="stTextArea"] textarea{min-height:135px!important;border-radius:18px!important;border:1px solid rgba(148,163,184,.18)!important;background:rgba(15,23,42,.78)!important;color:#f8fafc!important;font-size:16px!important;line-height:1.8!important;padding:16px 18px!important}
+div[data-testid="stTextArea"] textarea:focus{border-color:rgba(34,197,94,.55)!important;box-shadow:0 0 0 3px rgba(34,197,94,.10)!important}
+div.stButton>button{height:52px;border:0!important;border-radius:16px!important;font-size:16px!important;font-weight:900!important;color:#fff!important;background:linear-gradient(135deg,#22c55e,#16a34a)!important;box-shadow:0 10px 28px rgba(34,197,94,.18)}
+.results-title{font-size:26px;font-weight:900;margin:28px 0 18px}.result-count{padding:13px 16px;border-radius:14px;margin:22px 0 16px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.22);color:#dcfce7;font-weight:800}
+.car-card{border:1px solid rgba(148,163,184,.16);border-radius:22px;padding:22px;margin-bottom:18px;background:linear-gradient(180deg,rgba(30,41,59,.66),rgba(15,23,42,.82));box-shadow:0 14px 34px rgba(0,0,0,.20)}
+.card-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}.car-name{font-size:23px;font-weight:900;color:#f8fafc}
+.best-badge{display:inline-block;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;color:#bbf7d0;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.25)}
+.price{font-size:22px;font-weight:900;color:#4ade80;margin-bottom:16px}.spec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.spec-item{border-radius:13px;padding:12px 13px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06)}.spec-label{font-size:11px;color:#94a3b8;margin-bottom:5px}.spec-value{font-size:14px;font-weight:800;color:#e2e8f0}
+.reason-box{border-radius:14px;padding:14px 15px;margin-top:10px;line-height:1.8;color:#e2e8f0;background:rgba(34,197,94,.055);border:1px solid rgba(34,197,94,.12)}
+.match-row{margin-top:16px}.match-title{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px;color:#cbd5e1}.progress-bg{width:100%;height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#4ade80)}
+.text-response,.no-match,.error-box{padding:18px 20px;border-radius:16px;line-height:1.9;font-size:16px}.text-response{background:rgba(30,41,59,.70);border:1px solid rgba(148,163,184,.16)}.no-match{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.20)}.error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.20)}
+@media(max-width:700px){.hero-box{padding:24px 20px}.hero-title{font-size:27px}.hero-icon{display:none}.spec-grid{grid-template-columns:1fr 1fr}.card-header{align-items:flex-start;flex-direction:column}}
+@media(max-width:480px){.spec-grid{grid-template-columns:1fr}}
 </style>
 """,
     unsafe_allow_html=True
@@ -482,16 +328,14 @@ def extract_agent_answer(response):
 st.markdown(
     """
 <div class="hero-box">
-
-<div class="hero-title">
-🚗 صف لنا السيارة التي تبحث عنها
-</div>
-
-<div class="hero-text">
-اكتب ميزانيتك واستخدامك واحتياجاتك،
-وسيبحث CarWise عن أفضل السيارات المناسبة لك.
-</div>
-
+    <div class="brand-row">
+        <div class="brand-copy">
+            <div class="brand-pill">CarWise • مستشارك الذكي للسيارات</div>
+            <div class="hero-title">اختيار سيارتك صار <span>أسهل</span></div>
+            <div class="hero-text">اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة السيارات ليعرض لك أفضل الخيارات المناسبة لك.</div>
+        </div>
+        <div class="hero-icon">🚗</div>
+    </div>
 </div>
 """,
     unsafe_allow_html=True
