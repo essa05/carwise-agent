@@ -37,19 +37,74 @@ header[data-testid="stHeader"]{background:transparent}
     text-align:center;
     margin:4px auto 26px;
 }
+
 .site-logo-car{
-    width:230px;
-    height:105px;
-    margin:0 auto 8px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:250px;
+    height:110px;
+    margin:0 auto 12px;
+    position:relative;
 }
-.site-logo-car svg{
-    width:100%;
-    height:100%;
-    filter:drop-shadow(0 12px 24px rgba(34,197,94,.16));
+.car-shell{
+    position:absolute;
+    left:20px;
+    right:20px;
+    bottom:24px;
+    height:42px;
+    border-radius:22px 30px 12px 12px;
+    background:linear-gradient(135deg,#e2e8f0,#94a3b8);
+    box-shadow:0 14px 28px rgba(0,0,0,.28);
 }
+.car-roof{
+    position:absolute;
+    width:118px;
+    height:48px;
+    left:66px;
+    bottom:55px;
+    border-radius:42px 42px 8px 8px;
+    background:linear-gradient(135deg,#cbd5e1,#94a3b8);
+    transform:skewX(-9deg);
+}
+.car-window{
+    position:absolute;
+    width:88px;
+    height:30px;
+    left:82px;
+    bottom:64px;
+    border-radius:28px 28px 7px 7px;
+    background:#0f172a;
+    transform:skewX(-9deg);
+}
+.car-line{
+    position:absolute;
+    left:35px;
+    right:35px;
+    bottom:38px;
+    height:4px;
+    border-radius:99px;
+    background:linear-gradient(90deg,#22c55e,#4ade80);
+}
+.wheel{
+    position:absolute;
+    width:30px;
+    height:30px;
+    bottom:10px;
+    border-radius:50%;
+    background:#0f172a;
+    border:5px solid #334155;
+    box-sizing:border-box;
+}
+.wheel::after{
+    content:"";
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#4ade80;
+    left:6px;
+    top:6px;
+}
+.wheel-left{left:52px}
+.wheel-right{right:52px}
 .site-logo-name{
     font-size:44px;font-weight:950;letter-spacing:-1px;
     color:#f8fafc;line-height:1.05;
@@ -355,39 +410,15 @@ def extract_agent_answer(response):
 
 st.markdown(
     """
+
 <div class="site-logo">
     <div class="site-logo-car">
-        <svg viewBox="0 0 260 110" xmlns="http://www.w3.org/2000/svg" aria-label="CarWise car logo">
-            <defs>
-                <linearGradient id="carBody" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#f8fafc"/>
-                    <stop offset="100%" stop-color="#94a3b8"/>
-                </linearGradient>
-                <linearGradient id="carAccent" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stop-color="#22c55e"/>
-                    <stop offset="100%" stop-color="#4ade80"/>
-                </linearGradient>
-            </defs>
-
-            <path d="M35 70 L49 69 L68 43 Q73 35 85 35 H167 Q180 35 188 43 L210 67 L224 70 Q233 72 236 82 V88 H220
-                     Q216 101 201 101 Q186 101 181 88 H82 Q78 101 63 101 Q48 101 44 88 H28 V79 Q28 72 35 70Z"
-                  fill="url(#carBody)"/>
-
-            <path d="M82 43 H164 Q171 43 176 49 L190 66 H63 L75 48 Q78 43 82 43Z"
-                  fill="#0f172a"/>
-
-            <path d="M125 43 V66" stroke="#334155" stroke-width="3"/>
-
-            <path d="M39 75 H226" stroke="url(#carAccent)" stroke-width="4" stroke-linecap="round"/>
-
-            <circle cx="63" cy="88" r="14" fill="#0f172a" stroke="#334155" stroke-width="4"/>
-            <circle cx="63" cy="88" r="5" fill="#4ade80"/>
-
-            <circle cx="201" cy="88" r="14" fill="#0f172a" stroke="#334155" stroke-width="4"/>
-            <circle cx="201" cy="88" r="5" fill="#4ade80"/>
-
-            <path d="M207 67 H221" stroke="#f8fafc" stroke-width="4" stroke-linecap="round"/>
-        </svg>
+        <div class="car-roof"></div>
+        <div class="car-window"></div>
+        <div class="car-shell"></div>
+        <div class="car-line"></div>
+        <div class="wheel wheel-left"></div>
+        <div class="wheel wheel-right"></div>
     </div>
     <div class="site-logo-name">Car<span>Wise</span></div>
     <div class="site-logo-tagline">AI CAR ADVISOR</div>
