@@ -386,7 +386,7 @@ if user_request:
         "CarWise يبحث عن أفضل نتيجة..."
     ):
 
-    try:
+        try:
 
             payload = {
                 "chatInput": user_request
