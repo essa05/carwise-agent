@@ -2,6 +2,8 @@ import re
 import html
 import requests
 import streamlit as st
+import base64
+from pathlib import Path
 
 
 # =========================================================
@@ -20,6 +22,16 @@ st.set_page_config(
 # =========================================================
 
 N8N_WEBHOOK_URL = "https://essa2030.app.n8n.cloud/webhook/3ba5a8f7-d092-4aad-a307-d3f694a9d6f3"
+
+
+def image_to_data_uri(path):
+    image_path = Path(path)
+    if not image_path.exists():
+        return ""
+    encoded = base64.b64encode(image_path.read_bytes()).decode("utf-8")
+    return f"data:image/jpeg;base64,{encoded}"
+
+HERO_IMAGE = image_to_data_uri("carwise_hero_car.jpg")
 
 
 # =========================================================
@@ -432,6 +444,45 @@ div[data-testid="stChatInput"] button{
         flex-direction:column;
     }
 }
+
+.hero-split{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    align-items:stretch;
+    border:1px solid var(--border);
+    border-radius:30px;
+    overflow:hidden;
+    margin-bottom:22px;
+    background:linear-gradient(180deg,rgba(15,23,42,.94),rgba(10,18,31,.92));
+    box-shadow:0 26px 70px rgba(0,0,0,.28);
+}
+.hero-visual{
+    min-height:420px;
+    background-size:cover;
+    background-position:center;
+    position:relative;
+}
+.hero-visual:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,rgba(7,16,29,.02),rgba(7,16,29,.20) 65%,rgba(7,16,29,.72));
+}
+.hero-copy{
+    padding:42px 38px 34px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+.hero-copy .feature-grid{
+    grid-template-columns:1fr 1fr;
+}
+@media(max-width:900px){
+    .hero-split{grid-template-columns:1fr}
+    .hero-visual{min-height:300px}
+    .hero-copy{padding:30px 24px}
+}
+
 </style>
 """,
     unsafe_allow_html=True
@@ -760,37 +811,48 @@ if "messages" not in st.session_state:
 # الواجهة
 # =========================================================
 
-st.html("""
+st.html(f"""
 <div class="logo-wrap">
     <div class="logo-name">Car<span>Wise</span></div>
     <div class="logo-tagline">AI CAR ADVISOR</div>
     <div class="logo-line"></div>
 </div>
 
-<div class="hero">
-    <div class="hero-kicker">مستشارك الذكي للسيارات</div>
-    <div class="hero-title">اختر السيارة المناسبة لك <span>بذكاء</span></div>
-    <div class="hero-text">
-        اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة بيانات السيارات
-        ليقترح عليك أفضل الخيارات المطابقة لشروطك.
-    </div>
+<div class="hero-split">
+    <div class="hero-visual" style="background-image:url('{HERO_IMAGE}')"></div>
 
-    <div class="feature-grid">
-        <div class="feature">
-            <div class="feature-title">توصيات مخصصة</div>
-            <div class="feature-sub">بناءً على احتياجك الفعلي</div>
+    <div class="hero-copy">
+        <div class="hero-kicker">مستشارك الذكي للسيارات</div>
+
+        <div class="hero-title">
+            اختر السيارة المناسبة لك <span>بذكاء</span>
         </div>
-        <div class="feature">
-            <div class="feature-title">مقارنة دقيقة</div>
-            <div class="feature-sub">السعر والمواصفات والاستخدام</div>
+
+        <div class="hero-text">
+            اكتب ميزانيتك واستخدامك واحتياجاتك، وسيبحث CarWise في قاعدة بيانات السيارات
+            ليقترح عليك أفضل الخيارات المطابقة لشروطك.
         </div>
-        <div class="feature">
-            <div class="feature-title">بحث ذكي</div>
-            <div class="feature-sub">داخل قاعدة بيانات CarWise</div>
-        </div>
-        <div class="feature">
-            <div class="feature-title">نتيجة واضحة</div>
-            <div class="feature-sub">مع سبب الاختيار ونسبة التطابق</div>
+
+        <div class="feature-grid">
+            <div class="feature">
+                <div class="feature-title">توصيات مخصصة</div>
+                <div class="feature-sub">بناءً على احتياجك الفعلي</div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-title">مقارنة دقيقة</div>
+                <div class="feature-sub">السعر والمواصفات والاستخدام</div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-title">بحث ذكي</div>
+                <div class="feature-sub">داخل قاعدة بيانات CarWise</div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-title">نتيجة واضحة</div>
+                <div class="feature-sub">مع سبب الاختيار ونسبة التطابق</div>
+            </div>
         </div>
     </div>
 </div>
